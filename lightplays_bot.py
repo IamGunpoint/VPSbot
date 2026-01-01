@@ -1116,7 +1116,10 @@ async def create_vps_command(ctx, memory: int, cpu: int, disk: int, owner: disco
     except Exception as e:
         error_msg = f"❌ An error occurred while creating the VPS: {str(e)}"
         logger.error(error_msg)
-        await ctx.send(error_msg)
+        # Safely send long messages
+        error_chunks = [error_msg[i:i+1990] for i in range(0, len(error_msg), 1990)]
+        for chunk in error_chunks:
+        await ctx.send(chunk)
         if 'container' in locals():
             try:
                 container.stop()
@@ -2654,4 +2657,5 @@ if __name__ == "__main__":
     except Exception as e:
         logger.error(f"Bot crashed: {e}")
         traceback.print_exc()
+
 
